@@ -3,7 +3,8 @@ import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import declarative_base, sessionmaker
 
-DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./marketpulse.db")
+default_database_url = "sqlite:////tmp/marketpulse.db" if os.getenv("VERCEL") else "sqlite:///./marketpulse.db"
+DATABASE_URL = os.getenv("DATABASE_URL", default_database_url)
 
 engine = create_engine(
     DATABASE_URL,
