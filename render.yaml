@@ -1,0 +1,31 @@
+services:
+  - type: web
+    name: marketpulse-api
+    runtime: docker
+    rootDir: backend
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /health
+    envVars:
+      - key: FINNHUB_API_KEY
+        sync: false
+      - key: MARKETPULSE_TOKEN_SECRET
+        generateValue: true
+      - key: DATABASE_URL
+        value: sqlite:///./marketpulse.db
+
+  - type: web
+    name: marketpulse-web
+    runtime: static
+    rootDir: frontend
+    buildCommand: npm ci && npm run build
+    staticPublishPath: ./dist
+    envVars:
+      - key: VITE_API_URL
+        fromService:
+          type: web
+          name: marketpulse-api
+          property: host
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html

@@ -1,3 +1,5 @@
+import os
+
 from fastapi import FastAPI
 
 from app.database import Base, engine
@@ -7,6 +9,8 @@ from app.routes import auth, dashboard, portfolio, watchlist, market
 from fastapi.middleware.cors import CORSMiddleware
 
 Base.metadata.create_all(bind=engine)
+
+frontend_url = os.getenv("FRONTEND_URL", "http://localhost:5173")
 
 # Keep existing SQLite databases usable after adding authentication.
 with engine.begin() as connection:
@@ -22,7 +26,8 @@ app = FastAPI(
 )
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],
+    allow_origins=[frontend_url],
+    allow_origin_regex=r"https://marketpulse-web(?:-[a-z0-9-]+)?\.onrender\.com",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

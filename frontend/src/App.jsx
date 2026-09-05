@@ -2,7 +2,10 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { Activity, AlertTriangle, ArrowDownRight, ArrowUpRight, CircleHelp, Plus, RefreshCw, Search, Trash2, X } from "lucide-react";
 
-const API_URL = import.meta.env.VITE_API_URL || "";
+const configuredApiUrl = import.meta.env.VITE_API_URL || "";
+const API_URL = configuredApiUrl && !configuredApiUrl.startsWith("http")
+  ? `https://${configuredApiUrl}`
+  : configuredApiUrl;
 const storedToken = localStorage.getItem("marketpulse_token");
 if (storedToken) {
   axios.defaults.headers.common.Authorization = `Bearer ${storedToken}`;
