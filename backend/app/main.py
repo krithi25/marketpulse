@@ -27,7 +27,7 @@ app = FastAPI(
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[frontend_url],
-    allow_origin_regex=r"https://marketpulse-web(?:-[a-z0-9-]+)?\.onrender\.com",
+    allow_origin_regex=r"https://(?:marketpulse-web(?:-[a-z0-9-]+)?\.onrender\.com|[a-z0-9-]+\.vercel\.app)",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
