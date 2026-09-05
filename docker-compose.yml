@@ -1,0 +1,29 @@
+services:
+  backend:
+    build:
+      context: ./backend
+    environment:
+      MARKETPULSE_TOKEN_SECRET: ${MARKETPULSE_TOKEN_SECRET:-local-development-secret}
+      FINNHUB_API_KEY: ${FINNHUB_API_KEY}
+      DATABASE_URL: sqlite:////data/marketpulse.db
+    ports:
+      - "8000:8000"
+    volumes:
+      - marketpulse-data:/data
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  frontend:
+    build:
+      context: ./frontend
+    depends_on:
+      backend:
+        condition: service_healthy
+    ports:
+      - "5173:80"
+
+volumes:
+  marketpulse-data:
